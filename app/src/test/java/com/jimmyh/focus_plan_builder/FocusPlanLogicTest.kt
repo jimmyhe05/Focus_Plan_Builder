@@ -1,6 +1,6 @@
 package com.jimmyh.focus_plan_builder
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FocusPlanLogicTest {
@@ -12,20 +12,20 @@ class FocusPlanLogicTest {
 
     @Test
     fun durationCategory_10to29_isQuickReview() {
-        assertEquals("Quick Review", durationCategory(10))
-        assertEquals("Quick Review", durationCategory(29))
+        assertEquals("Quick review", durationCategory(10))
+        assertEquals("Quick review", durationCategory(29))
     }
 
     @Test
     fun durationCategory_30to60_isFocusedSession() {
-        assertEquals("Focused Session", durationCategory(30))
-        assertEquals("Focused Session", durationCategory(60))
+        assertEquals("Focused session", durationCategory(30))
+        assertEquals("Focused session", durationCategory(60))
     }
 
     @Test
     fun durationCategory_above60_isExtendedSession() {
-        assertEquals("Extended Session", durationCategory(61))
-        assertEquals("Extended Session", durationCategory(180))
+        assertEquals("Extended session", durationCategory(61))
+        assertEquals("Extended session", durationCategory(180))
     }
 
     @Test
