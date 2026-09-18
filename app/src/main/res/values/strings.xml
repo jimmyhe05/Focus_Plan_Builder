@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Focus_Plan_Builder</string>
+    <string name="app_name">Focus Plan Builder</string>
+    <string name="screen_instructions">Enter a subject and how many minutes you have. I\'ll turn it into a study plan with a recommended break.</string>
 </resources>

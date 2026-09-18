@@ -7,14 +7,14 @@ data class FocusPlan(
     val breakMinutes: Int,
 ) {
     val summary: String
-        get() = "Study $subject for $minutes minutes, and then take a $breakMinutes-minutes break."
+        get() = "Study $subject for $minutes minutes, and then take a $breakMinutes-minute break."
 }
 
 fun durationCategory(minutes: Int): String = when {
     minutes < 10 -> "Invalid"
-    minutes < 30 -> "Quick Review"
-    minutes <= 60 -> "Focused Session"
-    else -> "Extended Session"
+    minutes < 30 -> "Quick review"
+    minutes <= 60 -> "Focused session"
+    else -> "Extended session"
 }
 
 fun recommendedBreak(minutes: Int): Int = when {
