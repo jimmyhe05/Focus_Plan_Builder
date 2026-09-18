@@ -18,7 +18,6 @@ fun durationCategory(minutes: Int): String = when {
 }
 
 fun recommendedBreak(minutes: Int): Int = when {
-    minutes < 10 -> 0
     minutes < 30 -> 5
     minutes <= 60 -> 10
     else -> 15

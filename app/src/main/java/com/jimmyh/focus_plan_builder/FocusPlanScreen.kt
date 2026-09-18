@@ -41,7 +41,7 @@ fun FocusPlanScreen(
         .padding(24.dp)) {
         Text("Focus Plan Builder", style = MaterialTheme.typography.headlineMedium)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = stringResource(R.string.screen_instructions),
@@ -84,10 +84,16 @@ fun FocusPlanScreen(
         if (plan != null) {
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(plan.subject)
+                    Text(plan.subject, style = MaterialTheme.typography.titleLarge)
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text("Duration: ${plan.minutes} minutes")
                     Text("Category: ${plan.category}")
                     Text("Recommended break: ${plan.breakMinutes} minutes")
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Text(plan.summary)
                 }
             }
