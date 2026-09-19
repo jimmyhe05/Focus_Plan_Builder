@@ -20,10 +20,7 @@ Open in Android Studio, sync Gradle, run on API 26+. Enter a subject and 10-180 
 
 ## Screenshots
 
-![Result card](docs/screenshot.png)
-
-![Numeric keyboard](docs/screenshot1.png)
-
+<img src="docs/screenshot.png" width="300" alt="Result card"> <img src="docs/screenshot1.png" width="300" alt="Numeric Keyboard">
 
 ## State and recomposition
 
