@@ -1,54 +1,50 @@
 # Focus Plan Builder
 
 **Name:** Jimmy He
-**Assignment:** Focus Plan Builder (Jetpack Compose, single-screen study plan app)
+
+**Assignment:** Focus Plan Builder
 
 ## Description
 
-A single-screen Android app built with Kotlin and Jetpack Compose (Material 3). I enter a study subject and the number of minutes I have available, and the app validates the input, classifies the session into a duration category, recommends a break length, and displays the result on a Material 3 card.
+Single-screen Android app in Kotlin/Compose. Enter a subject and available minutes, then it validates input, classifies the session, recommends a break, and shows the result on a card.
 
 ## Running it
 
-1. Clone the repo and open the root folder in Android Studio.
-2. Let Gradle sync. No API keys or external config needed.
-3. Run on an emulator or device with API 26+ (`minSdk` in `app/build.gradle.kts`).
-4. Enter a subject and a duration between 10 and 180 minutes, then tap **Create plan**.
-
-From the command line:
+Open in Android Studio, sync Gradle, run on API 26+. Enter a subject and 10-180 minutes, tap **Create plan**.
 
 ```bash
 ./gradlew installDebug
+./gradlew test
+./gradlew connectedAndroidTest
 ```
 
-To run tests:
+## Screenshots
 
-```bash
-./gradlew test                  # unit tests (durationCategory, recommendedBreak)
-./gradlew connectedAndroidTest  # instrumented Compose UI tests (needs an emulator/device)
-```
+![Result card](docs/screenshot.png)
 
-## Screenshot
+![Numeric keyboard](docs/screenshot1.png)
 
-![Focus Plan Builder result card](docs/screenshot.png)
 
 ## State and recomposition
 
-**Which composable owns the application state?** `FocusPlanRoute` owns all mutable state, `subject`, `minutesText`, and `plan`, via `rememberSaveable`/`remember`. `FocusPlanScreen` is stateless: it receives everything as parameters and reports user actions through callbacks (`onSubjectChange`, `onMinutesChange`, `onCreatePlan`), so it never touches the state directly.
+1. **Which composable owns the application state?** `FocusPlanRoute` owns state (`subject`, `minutesText`, `plan`) via `rememberSaveable`/`remember`; `FocusPlanScreen` is stateless, taking values as parameters and reporting actions via callbacks.
 
-**Why are the text-field values stored as `String` rather than `Int`?** A `TextField`'s value must always represent exactly what's on screen, including invalid or in-progress input like `""` or `"18a"`. An `Int` can't hold those intermediate states, so the field would reject keystrokes or crash mid-typing. Storing `String` and parsing on demand keeps the field always renderable.
+2. **Why are the text-field values stored as `String` rather than `Int`?** A field must render in-progress input like `"18a"`, which `Int` can't hold.
 
-**Why is `toIntOrNull()` safer than `toInt()`?** `toInt()` throws `NumberFormatException` on any non-numeric string, crashing the app the moment a user types a letter or leaves the field empty. `toIntOrNull()` returns `null` instead, so invalid input flows into `canCreatePlan` evaluating to `false` rather than crashing the process.
+3. **Why is `toIntOrNull()` safer than `toInt()`?** `toIntOrNull()` returns `null` on bad input instead of throwing like `toInt()`, so `canCreatePlan` evaluates `false` instead of crashing.
 
-**What state change causes the button to be recomposed?** `canCreatePlan` is a `derivedStateOf` over `subject` and `minutes`. Any keystroke that changes either one recomposes `FocusPlanRoute`, which re-evaluates `canCreatePlan`, and Compose recomposes the `Button` because its `enabled` parameter reads that value. There's no separate mutable boolean to fall out of sync.
+4. **What state change causes the button to be recomposed?** `canCreatePlan` is `derivedStateOf` over `subject`/`minutes`; any keystroke recomposes it, and the `Button` recomposes since `enabled` reads that value, no separate boolean involved.
 
-**What does `rememberSaveable` preserve that a local variable would not?** A local variable or plain `remember` is scoped to the Composition and is lost when the `Activity` is destroyed and recreated, e.g. on rotation. `rememberSaveable` writes into the instance-state `Bundle`, so the value survives configuration changes and rehydrates on the next composition. I confirmed this directly: Logcat showed a new `Activity` instance hash on each rotation, and `subject`/`minutesText` kept their typed values across that recreation, while `plan` (plain `remember`) is not required to survive rotation per the spec.
+5. **What does `rememberSaveable` preserve that a local variable would not?** It writes to the instance-state `Bundle` and survives Activity recreation; plain `remember` doesn't. Confirmed via Logcat: a new Activity hash appears each rotation, and `subject`/`minutesText` kept their values across it.
+
+6. **AI use:** see below.
 
 ## Generative-AI assistance statement
 
-**Tool used:** Claude (Anthropic), used as a technical mentor and pair-programming guide, not as a code-generation shortcut.
+**Tool:** Claude Sonnet 5
 
-**What assistance it provided:** Claude explained Jetpack Compose concepts (`remember` vs. `rememberSaveable`, `derivedStateOf`, state hoisting, null-safe parsing) as I built each file, walked me through what to type and why, and helped me interpret test failures, Logcat output, and emulator behavior when something didn't match expectations.
+**Assistance:** Explained Compose concepts (`remember` vs. `rememberSaveable`, `derivedStateOf`, state hoisting) as I built each file, and helped interpret test failures and Logcat output. Also helped with tighten sentence structure and wording.
 
-**What portions I changed or verified:** I typed every file myself rather than pasting generated code, and personally diagnosed and fixed two real bugs the test suite caught: a capitalization mismatch between `durationCategory`'s output and the spec's exact wording, and an ambiguous `onNodeWithText("Kotlin")` lookup in an instrumented test that matched two nodes once the result card was showing. I also independently confirmed the emulator's numeric keyboard was actually appearing for the minutes field (not just configured) and manually walked the full required test table on my own device before automating it.
+**Verified/changed myself:** Fixed two bugs my own tests caught, a capitalization mismatch in `durationCategory`, and an ambiguous `onNodeWithText("Kotlin")` lookup matching two nodes once the card showed. Manually confirmed the numeric keyboard and walked the full test table on-device before automating it.
 
-**How I confirmed I understand the submitted code:** I can explain why each piece is structured the way it is, why `FocusPlanRoute` owns state while `FocusPlanScreen` stays stateless, why validation uses `toIntOrNull()` instead of `toInt()`, and why the button's enabled state is derived rather than a separate mutable flag, all covered in the state-and-recomposition section above. I verified rotation behavior myself with Logcat rather than taking the expected behavior on faith, and I'm responsible for the final submission.
+**Confirmed understanding:** I can explain why `FocusPlanRoute` owns state while `FocusPlanScreen` stays stateless, why validation uses `toIntOrNull()`, and why the button's state is derived, above.
